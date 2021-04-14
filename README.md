@@ -6,4 +6,9 @@
 * Mongoose
 * MongoDB (Community Server)
 
+## Todo
+* Authentication
+* Authorization
+
+
 
