@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Promotion = require('../models/promotions');
 const express = require('express');
+var authenticate = require('../authenticate');
 const promoRouter = express.Router();
 promoRouter.use(express.json());
 
@@ -12,7 +13,7 @@ promoRouter.get(`/`, async (req, res) => {
     res.status(200).json(promotionList);
 });
 
-promoRouter.post(`/`, async (req, res) => {
+promoRouter.post(`/`, authenticate.verifyUser, async (req, res) => {
     try {
         const {name, image, label, price, description, featured} = req.body;
         let promotion = new Promotion({
@@ -32,7 +33,7 @@ promoRouter.post(`/`, async (req, res) => {
       }
 });
 
-promoRouter.get(`/:promoId`, async (req, res) => {
+promoRouter.get(`/:promoId`, authenticate.verifyUser, async (req, res) => {
     try{
         let promotion = await Promotion.findById(req.params.promoId);
         res.status(200).json(promotion);
@@ -43,7 +44,7 @@ promoRouter.get(`/:promoId`, async (req, res) => {
     }
 });
 
-promoRouter.delete(`/:promoId`, async (req, res) => {
+promoRouter.delete(`/:promoId`, authenticate.verifyUser, async (req, res) => {
     try{
         let promotion = await Promotion.findByIdAndDelete(req.params.promoId);
         res.status(200).json(promotion, {success: "Updated Successfully"});
@@ -53,7 +54,7 @@ promoRouter.delete(`/:promoId`, async (req, res) => {
     }
 });
 
-promoRouter.put('/:promoId' , async (req, res) => {
+promoRouter.put('/:promoId' , authenticate.verifyUser, async (req, res) => {
     try{
         let promotion = await Promotion.findByIdAndUpdate(req.params.promoId, {$set: req.body});
         res.status(200).json(promotion);

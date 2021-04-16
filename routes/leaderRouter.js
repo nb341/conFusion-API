@@ -1,5 +1,6 @@
 const express = require('express');
 const leaderRouter = express.Router();
+var authenticate = require('../authenticate');
 const Leaders = require('../models/leaders');
 
 leaderRouter.use(express.json());
@@ -16,7 +17,7 @@ leaderRouter.get(`/`, (req, res, next) =>{
     
 });
 
-leaderRouter.get(`/:leaderId`, (req, res, next) =>{
+leaderRouter.get(`/:leaderId`,(req, res, next) =>{
    
     Leaders.findById(req.params.leaderId)
     .then(leaders => {
@@ -28,7 +29,7 @@ leaderRouter.get(`/:leaderId`, (req, res, next) =>{
     
 })
 
-leaderRouter.post('/', (req, res)=>{
+leaderRouter.post('/',authenticate.verifyUser, (req, res)=>{
     Leaders.create(req.body)
     .then( leader => {
         console.log(`leader created ${leader}`);
@@ -40,7 +41,7 @@ leaderRouter.post('/', (req, res)=>{
 });
 
 
-leaderRouter.put('/:leaderId', (req, res, next)=>{
+leaderRouter.put('/:leaderId', authenticate.verifyUser, (req, res, next)=>{
     Leaders.findByIdAndUpdate(req.params.leaderId, {$set: req.body}, {new: true}
         )
         .then( leader => {
@@ -51,7 +52,7 @@ leaderRouter.put('/:leaderId', (req, res, next)=>{
         .catch(err => next(err));
 });
 
-leaderRouter.delete('/:leaderId', (req, res, next)=>{
+leaderRouter.delete('/:leaderId', authenticate.verifyUser, (req, res, next)=>{
     Leaders.findOneAndDelete({'_id': req.params.leaderId})
         .then( leader => {
             res.statusCode = 200;
