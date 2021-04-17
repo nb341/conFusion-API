@@ -206,7 +206,11 @@ dishRouter.route('/:dishId/comments')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
+<<<<<<< HEAD
 .post(authenticate.verifyUser,authenticate.verifyOrdinaryUser, (req, res, next) => {
+=======
+.post(authenticate.verifyUser,authenticate.verifyOrdinaryUser, authenticate.verifyOrdinaryUser,(req, res, next) => {
+>>>>>>> a2dbc005c1846b0d52fc9765342c74a9f3cc8786
     Dishes.findById(req.params.dishId)
     .then((dish) => {
         if (dish != null) {
