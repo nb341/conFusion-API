@@ -5,7 +5,12 @@ var authenticate = require('../authenticate');
 const promoRouter = express.Router();
 promoRouter.use(express.json());
 
-promoRouter.get(`/`, async (req, res) => {
+// Admin Privilleges
+
+// POST, PUT and DELETE operations on /promotions and /promotions/:promoId
+
+
+promoRouter.get(`/`, authenticate.verifyUser, async (req, res) => {
     const promotionList = await Promotion.find();
     if(!promotionList) {
         res.status(500).json({success: false})
@@ -13,7 +18,7 @@ promoRouter.get(`/`, async (req, res) => {
     res.status(200).json(promotionList);
 });
 
-promoRouter.post(`/`, authenticate.verifyUser, async (req, res) => {
+promoRouter.post(`/`, authenticate.verifyUser, authenticate.verifyAdmin, async (req, res) => {
     try {
         const {name, image, label, price, description, featured} = req.body;
         let promotion = new Promotion({
@@ -44,7 +49,7 @@ promoRouter.get(`/:promoId`, authenticate.verifyUser, async (req, res) => {
     }
 });
 
-promoRouter.delete(`/:promoId`, authenticate.verifyUser, async (req, res) => {
+promoRouter.delete(`/:promoId`, authenticate.verifyUser, authenticate.verifyAdmin, async (req, res) => {
     try{
         let promotion = await Promotion.findByIdAndDelete(req.params.promoId);
         res.status(200).json(promotion, {success: "Updated Successfully"});
@@ -54,7 +59,7 @@ promoRouter.delete(`/:promoId`, authenticate.verifyUser, async (req, res) => {
     }
 });
 
-promoRouter.put('/:promoId' , authenticate.verifyUser, async (req, res) => {
+promoRouter.put('/:promoId' , authenticate.verifyUser, authenticate.verifyAdmin, async (req, res) => {
     try{
         let promotion = await Promotion.findByIdAndUpdate(req.params.promoId, {$set: req.body});
         res.status(200).json(promotion);
