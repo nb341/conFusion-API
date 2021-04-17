@@ -3,14 +3,28 @@ var passport = require('passport');
 var User = require('../models/user');
 var authenticate = require('../authenticate');
 
+
 router = express.Router();
 
 
 router.use(express.json());
 
 
+// In this task you will now activate the /users REST API end point. 
+// When an Admin sends a GET request to 
+// http://localhost:3000/users you will return the details of all the users. Ordinary users are forbidden from performing this operation.
 
 
+router.get(`/`, authenticate.verifyUser, authenticate.verifyAdmin ,async (req,res,next)=>{
+  try{
+
+    let users = await User.find();
+    res.status(200).json(users);
+
+  }catch(err){
+    return next(err);
+  }
+})
 
 router.post('/signup', (req, res, next) => {
   User.register(new User({username: req.body.username}), 

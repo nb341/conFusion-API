@@ -5,6 +5,11 @@ const Leaders = require('../models/leaders');
 
 leaderRouter.use(express.json());
 
+// Admin Privilleges
+
+
+// POST, PUT and DELETE operations on /leaders and /leaders/:leaderId
+
 leaderRouter.get(`/`, (req, res, next) =>{
    
     Leaders.find()
@@ -29,7 +34,7 @@ leaderRouter.get(`/:leaderId`,(req, res, next) =>{
     
 })
 
-leaderRouter.post('/',authenticate.verifyUser, (req, res)=>{
+leaderRouter.post('/',authenticate.verifyUser, authenticate.verifyAdmin, (req, res)=>{
     Leaders.create(req.body)
     .then( leader => {
         console.log(`leader created ${leader}`);
@@ -41,7 +46,7 @@ leaderRouter.post('/',authenticate.verifyUser, (req, res)=>{
 });
 
 
-leaderRouter.put('/:leaderId', authenticate.verifyUser, (req, res, next)=>{
+leaderRouter.put('/:leaderId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
     Leaders.findByIdAndUpdate(req.params.leaderId, {$set: req.body}, {new: true}
         )
         .then( leader => {
@@ -52,7 +57,7 @@ leaderRouter.put('/:leaderId', authenticate.verifyUser, (req, res, next)=>{
         .catch(err => next(err));
 });
 
-leaderRouter.delete('/:leaderId', authenticate.verifyUser, (req, res, next)=>{
+leaderRouter.delete('/:leaderId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
     Leaders.findOneAndDelete({'_id': req.params.leaderId})
         .then( leader => {
             res.statusCode = 200;
