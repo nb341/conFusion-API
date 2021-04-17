@@ -5,10 +5,10 @@
 * NodeJS
 * Mongoose
 * MongoDB (Community Server)
+* Postman for testing API
 
 ## Todo
-* Authentication
-* Authorization
+*OAuth
 
 
 
