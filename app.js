@@ -10,6 +10,7 @@ var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const uploadRouter = require('./routes/uploadRouter');
 var config = require('./config');
 const url = config.mongoUrl;
 
@@ -46,6 +47,7 @@ app.use('/users', usersRouter);
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
+app.use('/imageUpload',uploadRouter);
 const mongo = require('mongodb');
 const mongoose = require('mongoose');
 
