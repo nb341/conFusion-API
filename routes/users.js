@@ -2,6 +2,7 @@ var express = require('express');
 var passport = require('passport');
 var User = require('../models/user');
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 
 
 router = express.Router();
@@ -14,8 +15,11 @@ router.use(express.json());
 // When an Admin sends a GET request to 
 // http://localhost:3000/users you will return the details of all the users. Ordinary users are forbidden from performing this operation.
 
+router.options('/', cors.corsWithOptions, (req, res)=>{
+  res.sendStatus(200);
+});
 
-router.get(`/`, authenticate.verifyUser, authenticate.verifyAdmin ,async (req,res,next)=>{
+router.get(`/`, cors.cors, authenticate.verifyUser, authenticate.verifyAdmin ,async (req,res,next)=>{
   try{
 
     let users = await User.find();
@@ -26,7 +30,7 @@ router.get(`/`, authenticate.verifyUser, authenticate.verifyAdmin ,async (req,re
   }
 })
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', cors.corsWithOptions, (req, res, next) => {
   User.register(new User({username: req.body.username}), 
     req.body.password, (err, user) => {
     if(err) {
@@ -56,7 +60,7 @@ router.post('/signup', (req, res, next) => {
   });
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
+router.post('/login', cors.corsWithOptions, passport.authenticate('local'), (req, res) => {
 
   var token = authenticate.getToken({_id: req.user._id});
   res.statusCode = 200;
@@ -65,7 +69,7 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
 });
 
 
-router.get('/logout', (req, res, next) => {
+router.get('/logout', cors.cors, (req, res, next) => {
   if (req.session) {
     req.session.destroy();
     res.clearCookie('session-id');

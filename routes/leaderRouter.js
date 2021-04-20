@@ -2,7 +2,7 @@ const express = require('express');
 const leaderRouter = express.Router();
 var authenticate = require('../authenticate');
 const Leaders = require('../models/leaders');
-
+const cors = require('./cors');
 leaderRouter.use(express.json());
 
 // Admin Privilleges
@@ -10,7 +10,11 @@ leaderRouter.use(express.json());
 
 // POST, PUT and DELETE operations on /leaders and /leaders/:leaderId
 
-leaderRouter.get(`/`, (req, res, next) =>{
+leaderRouter.options('/', cors.corsWithOptions, (req, res)=>{
+    res.sendStatus(200);
+});
+
+leaderRouter.get(`/`, cors.cors, (req, res, next) =>{
    
     Leaders.find()
     .then(leaders => {
@@ -22,7 +26,7 @@ leaderRouter.get(`/`, (req, res, next) =>{
     
 });
 
-leaderRouter.get(`/:leaderId`,(req, res, next) =>{
+leaderRouter.get(`/:leaderId`, cors.cors, (req, res, next) =>{
    
     Leaders.findById(req.params.leaderId)
     .then(leaders => {
@@ -34,7 +38,7 @@ leaderRouter.get(`/:leaderId`,(req, res, next) =>{
     
 })
 
-leaderRouter.post('/',authenticate.verifyUser, authenticate.verifyAdmin, (req, res)=>{
+leaderRouter.post('/',cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res)=>{
     Leaders.create(req.body)
     .then( leader => {
         console.log(`leader created ${leader}`);
@@ -46,7 +50,7 @@ leaderRouter.post('/',authenticate.verifyUser, authenticate.verifyAdmin, (req, r
 });
 
 
-leaderRouter.put('/:leaderId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
+leaderRouter.put('/:leaderId', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
     Leaders.findByIdAndUpdate(req.params.leaderId, {$set: req.body}, {new: true}
         )
         .then( leader => {
@@ -57,7 +61,7 @@ leaderRouter.put('/:leaderId', authenticate.verifyUser, authenticate.verifyAdmin
         .catch(err => next(err));
 });
 
-leaderRouter.delete('/:leaderId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
+leaderRouter.delete('/:leaderId', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
     Leaders.findOneAndDelete({'_id': req.params.leaderId})
         .then( leader => {
             res.statusCode = 200;

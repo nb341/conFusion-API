@@ -117,7 +117,7 @@ dishRouter.use(express.json());
 
 dishRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-.get((req,res,next) => {
+.get(cors.cors, (req,res,next) => {
     Dishes.find({})
     .populate('comments.author')
     .then((dishes) => {
@@ -127,7 +127,7 @@ dishRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(cors.corsWithOptions ,authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.create(req.body)
     .then((dish) => {
         console.log('Dish Created ', dish);
