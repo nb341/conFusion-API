@@ -4,11 +4,10 @@
 * Express
 * NodeJS
 * Mongoose
+* PassportJ
 * MongoDB (Community Server)
 * Postman for testing API
 
 ## Todo
-*OAuth
-
-
+Integrate with React and Angular client side
 
